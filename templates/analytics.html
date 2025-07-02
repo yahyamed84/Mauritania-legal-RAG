@@ -1,0 +1,1186 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title|default:'لوحة الإحصائيات والتحليلات المتقدمة' }} - الجريدة الرسمية الموريتانية{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<style>
+    :root {
+        --primary-color: #2c5530; /* Dark Green */
+        --secondary-color: #4CAF50; /* Lighter Green */
+        --accent-color: #FFC107; /* Amber */
+        --bg-light: #f8f9fa;
+        --text-dark: #343a40;
+        --text-muted: #6c757d;
+        --border-color: #dee2e6;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        font-family: 'Noto Sans Arabic', sans-serif; /* Ensure Arabic font */
+    }
+
+    .analytics-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        padding: 2.5rem 2rem;
+        border-radius: 15px;
+        margin-bottom: 2rem;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+    .analytics-header h1 {
+        font-size: 2.2rem;
+        font-weight: 700;
+    }
+    .analytics-header p {
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        border-left: 5px solid var(--secondary-color);
+        position: relative;
+        overflow: hidden;
+    }
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+    }
+    .stat-icon {
+        font-size: 2.8rem;
+        color: var(--secondary-color);
+        margin-bottom: 1rem;
+        opacity: 0.8;
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+    }
+    .stat-content {
+        text-align: right;
+        padding-left: 4rem; /* Space for icon */
+    }
+    .stat-number {
+        font-size: 2.2rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        display: block;
+        line-height: 1.2;
+    }
+    .stat-label {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-top: 0.3rem;
+        font-weight: 500;
+    }
+    .stat-change {
+        font-size: 0.8rem;
+        margin-left: 0.5rem;
+    }
+    .stat-change.positive {
+        color: #28a745;
+    }
+    .stat-change.negative {
+        color: #dc3545;
+    }
+
+    .chart-container {
+        background: white;
+        border-radius: 15px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        position: relative;
+    }
+    .chart-container h4 {
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+    }
+    
+    /* Fix for chart container height */
+    .chart-wrapper {
+        position: relative;
+        height: 300px; /* Fixed height for all charts */
+        width: 100%;
+    }
+
+    .filter-section {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    .filter-section label {
+        font-weight: 500;
+        color: var(--text-dark);
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+    .filter-section .form-control, .filter-section .form-select {
+        border-radius: 8px;
+        border-color: var(--border-color);
+    }
+    .filter-section .btn-primary {
+        background-color: var(--primary-color);
+        border-color: var(--primary-color);
+        border-radius: 20px;
+        padding: 0.5rem 1.5rem;
+        transition: background-color 0.3s ease;
+    }
+    .filter-section .btn-primary:hover {
+        background-color: #1e3c20; /* Darker shade */
+    }
+
+    .document-list {
+        max-height: 400px;
+        overflow-y: auto;
+        padding-right: 10px; /* For scrollbar */
+    }
+    .document-item {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border-left: 3px solid var(--secondary-color);
+        transition: all 0.3s ease;
+    }
+    .document-item:hover {
+        background: #e9ecef;
+        transform: translateX(-3px);
+    }
+    .document-title {
+        font-weight: 600;
+        color: var(--primary-color);
+        margin-bottom: 0.5rem;
+        font-size: 0.95rem;
+    }
+    .document-meta {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+    }
+    .document-meta span {
+        margin-left: 1rem;
+    }
+    .download-btn {
+        background: linear-gradient(45deg, var(--secondary-color), #5cb85c);
+        border: none;
+        color: white;
+        padding: 0.4rem 0.8rem;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        transition: all 0.3s ease;
+        float: left;
+    }
+    .download-btn:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+    }
+
+    .keyword-cloud span {
+        display: inline-block;
+        padding: 0.3rem 0.8rem;
+        margin: 0.3rem;
+        border-radius: 20px;
+        background-color: #e9ecef;
+        color: var(--text-dark);
+        font-size: 0.9rem;
+        transition: background-color 0.3s ease;
+        cursor: default;
+    }
+    .keyword-cloud span:hover {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+
+    .loading-spinner {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 150px;
+        color: var(--secondary-color);
+    }
+    .loading-spinner i {
+        margin-right: 10px;
+    }
+
+    .refresh-btn {
+        background: none;
+        border: none;
+        color: var(--secondary-color);
+        font-size: 1.2rem;
+        cursor: pointer;
+        transition: color 0.3s ease;
+    }
+    .refresh-btn:hover {
+        color: var(--primary-color);
+    }
+
+    .last-update-time {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        text-align: center;
+        margin-top: 2rem;
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .stat-icon {
+            font-size: 2.2rem;
+        }
+        .stat-number {
+            font-size: 1.8rem;
+        }
+        .stat-content {
+            padding-left: 3rem;
+        }
+    }
+    @media (max-width: 768px) {
+        .analytics-header {
+            padding: 1.5rem;
+        }
+        .stat-card {
+            text-align: right; /* Keep text right-aligned */
+        }
+        .stat-icon {
+            position: relative;
+            display: block;
+            margin-bottom: 0.5rem;
+            text-align: right;
+            top: auto;
+            left: auto;
+        }
+        .stat-content {
+            padding-left: 0;
+        }
+        .chart-container {
+            padding: 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="analytics-header">
+        <h1><i class="fas fa-tachometer-alt me-3"></i>{{ page_title|default:'لوحة الإحصائيات والتحليلات المتقدمة' }}</h1>
+        <p class="mb-0">نظرة شاملة ومفصلة على أداء النظام ونشاط المستخدمين</p>
+    </div>
+
+    <!-- فلترة البيانات -->
+    <div class="filter-section">
+        <div class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label for="dateRangePicker">النطاق الزمني:</label>
+                <input type="text" id="dateRangePicker" class="form-control bg-light" placeholder="اختر نطاق التاريخ">
+            </div>
+            <div class="col-md-2">
+                <label for="modelTypeFilter">نوع النموذج:</label>
+                <select id="modelTypeFilter" class="form-select">
+                    <option value="all" selected>الكل</option>
+                    <option value="local">محلي</option>
+                    <option value="gemini">Gemini</option>
+                    <option value="unknown">غير محدد</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label for="confidenceFilter">أدنى مستوى ثقة (%):</label>
+                <input type="number" id="confidenceFilter" class="form-control" min="0" max="100" placeholder="0-100">
+            </div>
+            <div class="col-md-2">
+                <label>&nbsp;</label>
+                <button id="applyFiltersBtn" class="btn btn-primary w-100"><i class="fas fa-filter me-2"></i>تطبيق</button>
+            </div>
+            <div class="col-md-3 text-md-end">
+                 <span class="last-update-time">آخر تحديث: <span id="lastUpdateTime">{{ last_update|default:"الآن" }}</span></span>
+                 <button id="refreshAllBtn" class="refresh-btn ms-2" title="تحديث الكل"><i class="fas fa-sync-alt"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- الإحصائيات الرئيسية -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-comments"></i></div>
+                <div class="stat-content">
+                    <span class="stat-number" id="totalQuestions">{{ total_questions|default:0 }}</span>
+                    <div class="stat-label">إجمالي الأسئلة</div>
+                    <span class="stat-change" id="dailyChange"></span>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-content">
+                    <span class="stat-number" id="avgConfidence">{{ avg_confidence|floatformat:1|default:0 }}%</span>
+                    <div class="stat-label">متوسط مستوى الثقة</div>
+                    <small class="text-muted d-block" id="confidenceRange">(Min: {{ min_confidence|floatformat:1 }}% | Max: {{ max_confidence|floatformat:1 }}%)</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-file-alt"></i></div>
+                <div class="stat-content">
+                    <span class="stat-number" id="documentsCount">{{ documents_count|default:0 }}</span>
+                    <div class="stat-label">عدد المستندات المفهرسة</div>
+                    <small class="text-muted d-block" id="totalChunks">({{ total_chunks|default:0 }} قطعة)</small>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-stopwatch"></i></div>
+                <div class="stat-content">
+                    <span class="stat-number" id="avgResponseTime">{{ avg_response_time|floatformat:2|default:0 }} ث</span>
+                    <div class="stat-label">متوسط وقت الاستجابة</div>
+                    <small class="text-muted d-block" id="responseTimeRange">(Min/Max: ...)</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الرسوم البيانية -->
+    <div class="row">
+        <div class="col-lg-8 mb-4">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-chart-line me-2"></i>الأسئلة اليومية ومستوى الثقة</h4>
+                    <button class="refresh-btn" onclick="refreshChart('dailyQuestionsChart')" title="تحديث الرسم البياني"><i class="fas fa-sync-alt"></i></button>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="dailyQuestionsChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-pie-chart me-2"></i>استخدام النماذج</h4>
+                    <button class="refresh-btn" onclick="refreshChart('modelUsageChart')" title="تحديث الرسم البياني"><i class="fas fa-sync-alt"></i></button>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="modelUsageChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-clock me-2"></i>توزيع الأسئلة حسب الساعة</h4>
+                    <button class="refresh-btn" onclick="refreshChart('hourlyDistributionChart')" title="تحديث الرسم البياني"><i class="fas fa-sync-alt"></i></button>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="hourlyDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-calendar-day me-2"></i>توزيع الأسئلة حسب أيام الأسبوع</h4>
+                    <button class="refresh-btn" onclick="refreshChart('weekdayDistributionChart')" title="تحديث الرسم البياني"><i class="fas fa-sync-alt"></i></button>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="weekdayDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- الجريدة الرسمية والكلمات المفتاحية -->
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-newspaper me-2"></i>مستندات الجريدة الرسمية</h4>
+                    <button class="refresh-btn" onclick="fetchOfficialJournal()" title="تحديث القائمة"><i class="fas fa-sync-alt"></i></button>
+                </div>
+                <div class="input-group mb-3">
+                    <input type="text" id="journalSearchInput" class="form-control" placeholder="ابحث في المستندات (العنوان، التاريخ، الرقم...)">
+                    <button class="btn btn-outline-secondary" type="button" id="journalSearchBtn"><i class="fas fa-search"></i></button>
+                </div>
+                <div id="officialJournalDocs" class="document-list">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>جاري جلب المستندات...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 mb-4">
+            <div class="chart-container">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4><i class="fas fa-tags me-2"></i>أهم الكلمات المفتاحية (آخر 30 يوم)</h4>
+                    <button class="refresh-btn" onclick="loadTopKeywords()" title="تحديث الكلمات"><i class="fas fa-sync-alt"></i></button>
+                </div>
+                <div id="topKeywordsCloud" class="keyword-cloud">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>جاري تحليل الكلمات...</p>
+                    </div>
+                </div>
+                <hr>
+                <h5><i class="fas fa-folder-open me-2"></i>التصنيفات المقترحة</h5>
+                <div id="keywordCategories">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>جاري تحليل التصنيفات...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- إحصائيات إضافية -->
+    <div class="row">
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container">
+                <h4><i class="fas fa-cogs me-2"></i>أداء النظام</h4>
+                <div id="systemPerformanceStats">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>جاري جلب بيانات الأداء...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-6 mb-4">
+            <div class="chart-container">
+                <h4><i class="fas fa-database me-2"></i>إحصائيات المستندات</h4>
+                <div id="documentStats">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>جاري جلب إحصائيات المستندات...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12 mb-4">
+            <div class="chart-container">
+                <h4><i class="fas fa-users me-2"></i>نشاط المستخدمين (آخر 30 يوم)</h4>
+                <div id="userActivityStats">
+                    <div class="loading-spinner">
+                        <i class="fas fa-spinner fa-spin fa-2x"></i>
+                        <p>جاري جلب بيانات النشاط...</p>
+                    </div>
+                </div>
+                <h5>أحدث الجلسات</h5>
+                <div class="table-responsive">
+                    <table class="table table-sm table-hover">
+                        <thead>
+                            <tr>
+                                <th>معرف الجلسة</th>
+                                <th>عدد الأسئلة</th>
+                                <th>متوسط الثقة</th>
+                                <th>مدة الجلسة (دقيقة)</th>
+                                <th>آخر نشاط</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userSessionsTable">
+                            <!-- سيتم ملء البيانات هنا -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="last-update-time">
+        يتم تحديث البيانات تلقائياً كل 5 دقائق.
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/ar.js"></script> <!-- Arabic locale for flatpickr -->
+
+<script>
+// Chart instances storage
+const chartInstances = {
+    dailyQuestionsChart: null,
+    modelUsageChart: null,
+    hourlyDistributionChart: null,
+    weekdayDistributionChart: null
+};
+
+let apiDataCache = {}; // Cache for API responses
+let autoRefreshInterval;
+
+const chartConfig = {
+    plugins: {
+        legend: {
+            labels: {
+                font: {
+                    family: 'Noto Sans Arabic'
+                }
+            }
+        }
+    },
+    scales: {
+        y: {
+            beginAtZero: true,
+            ticks: {
+                font: {
+                    family: 'Noto Sans Arabic'
+                }
+            }
+        },
+        x: {
+            ticks: {
+                font: {
+                    family: 'Noto Sans Arabic'
+                }
+            }
+        }
+    },
+    responsive: true,
+    maintainAspectRatio: true
+};
+
+// تهيئة الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    initializeCharts();
+    initializeFilters();
+    loadAllData();
+
+    // إعداد التحديث التلقائي
+    autoRefreshInterval = setInterval(loadAllData, 5 * 60 * 1000); // كل 5 دقائق
+
+    // ربط الأحداث
+    document.getElementById('applyFiltersBtn').addEventListener('click', applyFiltersAndReload);
+    document.getElementById('refreshAllBtn').addEventListener('click', loadAllData);
+    document.getElementById('journalSearchBtn').addEventListener('click', fetchOfficialJournal);
+    document.getElementById('journalSearchInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            fetchOfficialJournal();
+        }
+    });
+});
+
+function initializeFilters() {
+    flatpickr("#dateRangePicker", {
+        mode: "range",
+        dateFormat: "Y-m-d",
+        locale: "ar", // Use Arabic locale
+        defaultDate: [new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), new Date()]
+    });
+}
+
+function getApiParams() {
+    const params = new URLSearchParams();
+    const dateRange = document.getElementById('dateRangePicker')._flatpickr.selectedDates;
+    if (dateRange.length === 2) {
+        params.append('date_from', dateRange[0].toISOString().split('T')[0]);
+        params.append('date_to', dateRange[1].toISOString().split('T')[0]);
+    }
+    const modelType = document.getElementById('modelTypeFilter').value;
+    if (modelType !== 'all') {
+        params.append('model_type', modelType);
+    }
+    const confidence = document.getElementById('confidenceFilter').value;
+    if (confidence) {
+        params.append('confidence_threshold', parseFloat(confidence) / 100);
+    }
+    return params.toString();
+}
+
+function applyFiltersAndReload() {
+    apiDataCache = {}; // Clear cache on filter change
+    loadAllData();
+}
+
+// تهيئة الرسوم البيانية
+function initializeCharts() {
+    // رسم بياني للأسئلة اليومية ومستوى الثقة
+    createDailyQuestionsChart();
+    createModelUsageChart();
+    createHourlyDistributionChart();
+    createWeekdayDistributionChart();
+}
+
+// Create individual chart functions with proper cleanup
+function createDailyQuestionsChart() {
+    // Destroy existing chart if it exists
+    if (chartInstances.dailyQuestionsChart) {
+        chartInstances.dailyQuestionsChart.destroy();
+    }
+    
+    const dailyCtx = document.getElementById('dailyQuestionsChart').getContext('2d');
+    chartInstances.dailyQuestionsChart = new Chart(dailyCtx, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: 'عدد الأسئلة',
+                    data: [],
+                    borderColor: 'var(--primary-color)',
+                    backgroundColor: 'rgba(44, 85, 48, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    yAxisID: 'yQuestions'
+                },
+                {
+                    label: 'متوسط الثقة (%)',
+                    data: [],
+                    borderColor: 'var(--accent-color)',
+                    backgroundColor: 'rgba(255, 193, 7, 0.1)',
+                    fill: false,
+                    tension: 0.3,
+                    yAxisID: 'yConfidence'
+                }
+            ]
+        },
+        options: {
+            ...chartConfig,
+            scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        tooltipFormat: 'yyyy-MM-dd',
+                        displayFormats: {
+                            day: 'MMM d'
+                        }
+                    },
+                    ticks: { font: { family: 'Noto Sans Arabic' } }
+                },
+                yQuestions: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    beginAtZero: true,
+                    title: { display: true, text: 'عدد الأسئلة', font: { family: 'Noto Sans Arabic' } },
+                    ticks: { font: { family: 'Noto Sans Arabic' } }
+                },
+                yConfidence: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    min: 0,
+                    max: 100,
+                    title: { display: true, text: 'مستوى الثقة (%)', font: { family: 'Noto Sans Arabic' } },
+                    grid: { drawOnChartArea: false }, // only want the grid lines for one axis to show up
+                    ticks: { font: { family: 'Noto Sans Arabic' } }
+                }
+            }
+        }
+    });
+}
+
+function createModelUsageChart() {
+    // Destroy existing chart if it exists
+    if (chartInstances.modelUsageChart) {
+        chartInstances.modelUsageChart.destroy();
+    }
+    
+    const modelCtx = document.getElementById('modelUsageChart').getContext('2d');
+    chartInstances.modelUsageChart = new Chart(modelCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['النموذج المحلي', 'Gemini API', 'غير محدد'],
+            datasets: [{
+                data: [0, 0, 0],
+                backgroundColor: ['#1565c0', '#7b1fa2', '#6c757d'],
+                borderWidth: 2,
+                borderColor: '#fff'
+            }]
+        },
+        options: {
+            ...chartConfig,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { font: { family: 'Noto Sans Arabic' }, padding: 20 }
+                }
+            }
+        }
+    });
+}
+
+function createHourlyDistributionChart() {
+    // Destroy existing chart if it exists
+    if (chartInstances.hourlyDistributionChart) {
+        chartInstances.hourlyDistributionChart.destroy();
+    }
+    
+    const hourlyCtx = document.getElementById('hourlyDistributionChart').getContext('2d');
+    chartInstances.hourlyDistributionChart = new Chart(hourlyCtx, {
+        type: 'bar',
+        data: {
+            labels: [], // 0:00, 1:00, ... 23:00
+            datasets: [{
+                label: 'عدد الأسئلة',
+                data: [],
+                backgroundColor: 'rgba(76, 175, 80, 0.6)',
+                borderColor: 'var(--secondary-color)',
+                borderWidth: 1
+            }]
+        },
+        options: chartConfig
+    });
+}
+
+function createWeekdayDistributionChart() {
+    // Destroy existing chart if it exists
+    if (chartInstances.weekdayDistributionChart) {
+        chartInstances.weekdayDistributionChart.destroy();
+    }
+    
+    const weekdayCtx = document.getElementById('weekdayDistributionChart').getContext('2d');
+    chartInstances.weekdayDistributionChart = new Chart(weekdayCtx, {
+        type: 'radar',
+        data: {
+            labels: [], // الاثنين, الثلاثاء, ... الأحد
+            datasets: [{
+                label: 'عدد الأسئلة',
+                data: [],
+                backgroundColor: 'rgba(255, 193, 7, 0.2)',
+                borderColor: 'var(--accent-color)',
+                pointBackgroundColor: 'var(--accent-color)',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: 'var(--accent-color)'
+            }]
+        },
+        options: {
+            ...chartConfig,
+            scales: {
+                r: {
+                    angleLines: { display: true },
+                    suggestedMin: 0,
+                    ticks: { backdropColor: 'transparent' },
+                    pointLabels: { font: { family: 'Noto Sans Arabic', size: 11 } }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
+
+// تحميل جميع البيانات
+async function loadAllData() {
+    console.log("Loading all data...");
+    showLoading('all');
+    const apiParams = getApiParams();
+    const fetchPromises = [
+        fetchApiData(`/api/analytics-data/?${apiParams}`, 'analyticsData'),
+        fetchApiData('/api/official-journal/', 'officialJournal'), // Initial load without search
+        fetchApiData('/api/top-keywords/', 'topKeywords'),
+        fetchApiData('/api/system-performance/', 'systemPerformance'),
+        fetchApiData('/api/document-stats/', 'documentStats'),
+        fetchApiData('/api/user-activity/', 'userActivity')
+    ];
+
+    try {
+        await Promise.all(fetchPromises);
+        updateDashboardUI();
+        updateLastUpdateTime();
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+        // Optionally show a global error message
+    } finally {
+        hideLoading('all');
+    }
+}
+
+// جلب البيانات من API مع التخزين المؤقت
+async function fetchApiData(url, cacheKey) {
+    if (apiDataCache[cacheKey]) {
+        console.log(`Using cached data for ${cacheKey}`);
+        return apiDataCache[cacheKey];
+    }
+    try {
+        console.log(`Fetching data for ${cacheKey} from ${url}`);
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        if (data.success) {
+            apiDataCache[cacheKey] = data;
+            return data;
+        } else {
+            throw new Error(data.error || 'API request failed');
+        }
+    } catch (error) {
+        console.error(`Error fetching ${cacheKey}:`, error);
+        showError(cacheKey, `خطأ في تحميل بيانات ${cacheKey}`);
+        return null; // Return null on error
+    }
+}
+
+// تحديث واجهة المستخدم بجميع البيانات
+function updateDashboardUI() {
+    console.log("Updating dashboard UI...");
+    updateAnalyticsDataUI();
+    updateOfficialJournalUI();
+    updateTopKeywordsUI();
+    updateSystemPerformanceUI();
+    updateDocumentStatsUI();
+    updateUserActivityUI();
+}
+
+// تحديث بيانات الإحصائيات والرسوم البيانية الرئيسية
+function updateAnalyticsDataUI() {
+    const data = apiDataCache['analyticsData'];
+    if (!data) return;
+
+    // تحديث الرسوم البيانية
+    if (chartInstances.dailyQuestionsChart) {
+        chartInstances.dailyQuestionsChart.data.labels = data.daily_questions.labels;
+        chartInstances.dailyQuestionsChart.data.datasets[0].data = data.daily_questions.data;
+        chartInstances.dailyQuestionsChart.data.datasets[1].data = data.confidence_trend.data;
+        chartInstances.dailyQuestionsChart.update();
+    }
+    
+    if (chartInstances.modelUsageChart) {
+        chartInstances.modelUsageChart.data.datasets[0].data = [
+            data.model_usage.local || 0,
+            data.model_usage.gemini || 0,
+            data.model_usage.unknown || 0
+        ];
+        chartInstances.modelUsageChart.update();
+    }
+    
+    if (chartInstances.hourlyDistributionChart) {
+        chartInstances.hourlyDistributionChart.data.labels = data.hourly_distribution.labels;
+        chartInstances.hourlyDistributionChart.data.datasets[0].data = data.hourly_distribution.data;
+        chartInstances.hourlyDistributionChart.update();
+    }
+    
+    if (chartInstances.weekdayDistributionChart) {
+        chartInstances.weekdayDistributionChart.data.labels = data.weekday_distribution.labels;
+        chartInstances.weekdayDistributionChart.data.datasets[0].data = data.weekday_distribution.data;
+        chartInstances.weekdayDistributionChart.update();
+    }
+
+    // تحديث إحصائيات وقت الاستجابة
+    const rtStats = data.response_time_stats;
+    if (rtStats) {
+        setText('avgResponseTime', `${rtStats.avg} ث`);
+        setText('responseTimeRange', `(Min: ${rtStats.min}ث | Max: ${rtStats.max}ث)`);
+    }
+}
+
+// تحديث قائمة الجريدة الرسمية
+async function fetchOfficialJournal() {
+    const searchTerm = document.getElementById('journalSearchInput').value;
+    const params = new URLSearchParams();
+    if (searchTerm) {
+        params.append('search', searchTerm);
+    }
+    params.append('limit', 30); // Load more initially
+    showLoading('officialJournalDocs');
+    try {
+        const data = await fetchApiData(`/api/official-journal/?${params.toString()}`, `officialJournal_${searchTerm || 'all'}`);
+        updateOfficialJournalUI(data); // Pass fetched data directly
+    } catch (error) {
+        console.error("Error fetching official journal:", error);
+        showError('officialJournalDocs', 'خطأ في تحميل مستندات الجريدة الرسمية.');
+    } finally {
+        hideLoading('officialJournalDocs');
+    }
+}
+
+function updateOfficialJournalUI(data = apiDataCache['officialJournal']) {
+    const container = document.getElementById('officialJournalDocs');
+    if (!data || !data.documents) {
+        showError('officialJournalDocs', 'لا توجد بيانات لعرضها.');
+        return;
+    }
+
+    if (data.documents.length === 0) {
+        container.innerHTML = '<p class="text-center text-muted">لا توجد مستندات تطابق البحث.</p>';
+        return;
+    }
+
+    const docsHtml = data.documents.map(doc => `
+        <div class="document-item">
+            <a href="${doc.url}" target="_blank" class="download-btn" title="تحميل ${doc.filename}">
+                <i class="fas fa-download me-1"></i> تحميل
+            </a>
+            <div class="document-title">${doc.title}</div>
+            <div class="document-meta">
+                <span><i class="fas fa-calendar-alt me-1"></i> ${doc.date || 'غير محدد'}</span>
+                <span><i class="fas fa-hashtag me-1"></i> ${doc.issue_number || 'غير محدد'}</span>
+                <span><i class="fas fa-file-pdf me-1"></i> ${doc.filename}</span>
+                <span><i class="fas fa-weight-hanging me-1"></i> ${doc.size || 'غير محدد'}</span>
+            </div>
+        </div>
+    `).join('');
+    container.innerHTML = docsHtml;
+}
+
+// تحديث سحابة الكلمات المفتاحية والتصنيفات
+async function loadTopKeywords() {
+    showLoading('topKeywordsCloud');
+    showLoading('keywordCategories');
+    try {
+        const data = await fetchApiData('/api/top-keywords/?days=30&limit=50', 'topKeywords');
+        updateTopKeywordsUI(data);
+    } catch (error) {
+        console.error("Error fetching top keywords:", error);
+        showError('topKeywordsCloud', 'خطأ في تحميل الكلمات المفتاحية.');
+        showError('keywordCategories', 'خطأ في تحميل التصنيفات.');
+    } finally {
+        hideLoading('topKeywordsCloud');
+        hideLoading('keywordCategories');
+    }
+}
+
+function updateTopKeywordsUI(data = apiDataCache['topKeywords']) {
+    const cloudContainer = document.getElementById('topKeywordsCloud');
+    const catContainer = document.getElementById('keywordCategories');
+    if (!data || !data.keywords) {
+        showError('topKeywordsCloud', 'لا توجد بيانات لعرضها.');
+        showError('keywordCategories', 'لا توجد بيانات لعرضها.');
+        return;
+    }
+
+    // تحديث سحابة الكلمات
+    if (data.keywords.length > 0) {
+        const maxCount = Math.max(...data.keywords.map(k => k.count), 1);
+        const keywordsHtml = data.keywords.map(kw => {
+            const fontSize = 0.8 + (kw.count / maxCount) * 1.2; // Adjust font size based on count
+            return `<span style="font-size: ${fontSize}rem;" title="التكرار: ${kw.count}">${kw.word}</span>`;
+        }).join('');
+        cloudContainer.innerHTML = keywordsHtml;
+    } else {
+        cloudContainer.innerHTML = '<p class="text-center text-muted">لا توجد كلمات مفتاحية شائعة.</p>';
+    }
+
+    // تحديث التصنيفات
+    if (data.categories && data.categories.length > 0) {
+        const totalCategoryCount = data.categories.reduce((sum, cat) => sum + cat.count, 0);
+        const categoriesHtml = data.categories.map(cat => {
+            const percentage = totalCategoryCount > 0 ? ((cat.count / totalCategoryCount) * 100).toFixed(1) : 0;
+            return `
+                <div class="mb-2">
+                    <span>${cat.name} (${cat.count})</span>
+                    <div class="progress" style="height: 10px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: ${percentage}%;" aria-valuenow="${percentage}" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        catContainer.innerHTML = categoriesHtml;
+    } else {
+        catContainer.innerHTML = '<p class="text-center text-muted">لا توجد تصنيفات مقترحة.</p>';
+    }
+}
+
+// تحديث إحصائيات أداء النظام
+function updateSystemPerformanceUI(data = apiDataCache['systemPerformance']) {
+    const container = document.getElementById('systemPerformanceStats');
+    if (!data) {
+        showError('systemPerformanceStats', 'لا توجد بيانات لعرضها.');
+        return;
+    }
+
+    const rt = data.response_time_stats;
+    const conf = data.confidence_stats;
+    const models = data.model_stats;
+
+    let modelsHtml = '<ul class="list-unstyled">';
+    if (models && models.length > 0) {
+        models.forEach(m => {
+            modelsHtml += `<li class="mb-1"><span class="badge bg-secondary me-2">${m.model}</span> ${m.count} سؤال | ثقة: ${m.avg_confidence}% | استجابة: ${m.avg_response_time}ث</li>`;
+        });
+    } else {
+        modelsHtml += '<li>لا توجد بيانات نماذج</li>';
+    }
+    modelsHtml += '</ul>';
+
+    const html = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6><i class="fas fa-stopwatch me-1"></i> وقت الاستجابة (ثانية)</h6>
+                <ul class="list-unstyled small">
+                    <li>المتوسط: ${rt.avg} (الانحراف: ${rt.std_dev})</li>
+                    <li>الأدنى: ${rt.min}</li>
+                    <li>الأقصى: ${rt.max}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6><i class="fas fa-check-circle me-1"></i> مستوى الثقة (%)</h6>
+                <ul class="list-unstyled small">
+                    <li>المتوسط: ${conf.avg} (الانحراف: ${conf.std_dev})</li>
+                    <li>الأدنى: ${conf.min}</li>
+                    <li>الأقصى: ${conf.max}</li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <h6><i class="fas fa-robot me-1"></i> إحصائيات النماذج</h6>
+        ${modelsHtml}
+        <hr>
+        <small class="text-muted">وقت استجابة API: ${data.api_response_time} ثانية | آخر تحديث: ${new Date(data.timestamp).toLocaleTimeString('ar-MA')}</small>
+    `;
+    container.innerHTML = html;
+}
+
+// تحديث إحصائيات المستندات
+function updateDocumentStatsUI(data = apiDataCache['documentStats']) {
+    const container = document.getElementById('documentStats');
+    if (!data) {
+        showError('documentStats', 'لا توجد بيانات لعرضها.');
+        return;
+    }
+
+    const stats = data.document_stats;
+    const recent = data.recent_documents;
+
+    let recentHtml = '<ul class="list-unstyled">';
+    if (recent && recent.length > 0) {
+        recent.forEach(doc => {
+            recentHtml += `<li class="small mb-1"><i class="fas fa-file-alt me-1"></i> ${doc.filename} (${doc.file_size}) - ${doc.chunk_count} قطعة</li>`;
+        });
+    } else {
+        recentHtml += '<li>لا توجد مستندات حديثة</li>';
+    }
+    recentHtml += '</ul>';
+
+    const html = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6><i class="fas fa-database me-1"></i> الإجمالي</h6>
+                <ul class="list-unstyled small">
+                    <li>عدد المستندات: ${stats.total_docs}</li>
+                    <li>إجمالي القطع: ${stats.total_chunks}</li>
+                    <li>الحجم الإجمالي: ${stats.total_size}</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6><i class="fas fa-calculator me-1"></i> المتوسطات</h6>
+                <ul class="list-unstyled small">
+                    <li>متوسط القطع/مستند: ${stats.avg_chunks_per_doc}</li>
+                    <li>متوسط الحجم/مستند: ${stats.avg_size_per_doc} ميجابايت</li>
+                </ul>
+            </div>
+        </div>
+        <hr>
+        <h6><i class="fas fa-history me-1"></i> أحدث المستندات المضافة</h6>
+        ${recentHtml}
+    `;
+    container.innerHTML = html;
+}
+
+// تحديث إحصائيات نشاط المستخدمين
+function updateUserActivityUI(data = apiDataCache['userActivity']) {
+    const container = document.getElementById('userActivityStats');
+    const tableBody = document.getElementById('userSessionsTable');
+    if (!data) {
+        showError('userActivityStats', 'لا توجد بيانات لعرضها.');
+        tableBody.innerHTML = '<tr><td colspan="5" class="text-center text-muted">لا توجد بيانات لعرضها.</td></tr>';
+        return;
+    }
+
+    const stats = data.activity_stats;
+    const sessions = data.sessions;
+
+    const statsHtml = `
+        <div class="row small mb-3">
+            <div class="col-md-3"><strong>إجمالي الجلسات:</strong> ${stats.total_sessions}</div>
+            <div class="col-md-3"><strong>إجمالي الأسئلة:</strong> ${stats.total_questions}</div>
+            <div class="col-md-3"><strong>متوسط الأسئلة/جلسة:</strong> ${stats.avg_questions_per_session}</div>
+            <div class="col-md-3"><strong>متوسط مدة الجلسة:</strong> ${stats.avg_session_duration_minutes} دقيقة</div>
+        </div>
+    `;
+    container.innerHTML = statsHtml;
+
+    let sessionsHtml = '';
+    if (sessions && sessions.length > 0) {
+        sessions.forEach(s => {
+            sessionsHtml += `
+                <tr>
+                    <td>${s.session_id.substring(0, 8)}...</td>
+                    <td>${s.questions_count}</td>
+                    <td>${s.avg_confidence}%</td>
+                    <td>${s.duration_minutes}</td>
+                    <td>${new Date(s.last_activity).toLocaleString('ar-MA')}</td>
+                </tr>
+            `;
+        });
+    } else {
+        sessionsHtml = '<tr><td colspan="5" class="text-center text-muted">لا توجد جلسات لعرضها.</td></tr>';
+    }
+    tableBody.innerHTML = sessionsHtml;
+}
+
+// وظائف مساعدة
+function setText(elementId, text) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.textContent = text;
+    }
+}
+
+function showLoading(elementId) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        // Simplified loading indicator for sections
+        if (elementId !== 'all') {
+             element.innerHTML = '<div class="loading-spinner"><i class="fas fa-spinner fa-spin"></i><p>جاري التحميل...</p></div>';
+        }
+        // You might want a more global loading indicator for 'all'
+    }
+}
+
+function hideLoading(elementId) {
+    // In this setup, loading indicators are replaced by content, so no explicit hide needed for sections.
+    // You might need logic for a global indicator.
+}
+
+function showError(elementId, message) {
+    const element = document.getElementById(elementId);
+    if (element) {
+        element.innerHTML = `<div class="alert alert-danger alert-sm p-2 text-center">${message}</div>`;
+    }
+}
+
+function updateLastUpdateTime() {
+    const now = new Date();
+    setText('lastUpdateTime', now.toLocaleTimeString('ar-MA'));
+}
+
+// Function to trigger chart refresh (fetches data again)
+function refreshChart(chartId) {
+    // Determine which API data is needed for this chart
+    let cacheKey;
+    if (chartId === 'dailyQuestionsChart' || chartId === 'modelUsageChart' || chartId === 'hourlyDistributionChart' || chartId === 'weekdayDistributionChart') {
+        cacheKey = 'analyticsData';
+    }
+    // Add other chart-to-cacheKey mappings if needed
+
+    if (cacheKey) {
+        apiDataCache[cacheKey] = null; // Invalidate cache
+        const apiParams = getApiParams();
+        fetchApiData(`/api/analytics-data/?${apiParams}`, cacheKey).then(updateAnalyticsDataUI);
+    }
+}
+
+</script>
+{% endblock %}

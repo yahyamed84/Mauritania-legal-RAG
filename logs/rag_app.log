@@ -1,0 +1,557 @@
+INFO 2025-07-01 20:54:45,373 rag_engine - Using device for embeddings: cpu
+INFO 2025-07-01 20:54:45,373 rag_engine - Loading embedding model: sentence-transformers/all-MiniLM-L6-v2...
+INFO 2025-07-01 21:02:01,345 rag_engine - Embedding model loaded.
+INFO 2025-07-01 21:02:01,795 rag_engine - Loaded 28178 vectors and 28178 metadata entries.
+INFO 2025-07-01 21:02:01,795 rag_engine - RAG core components (Embeddings, FAISS) initialized.
+INFO 2025-07-01 21:02:01,795 rag_engine - Using device for embeddings: cpu
+INFO 2025-07-01 21:02:01,795 rag_engine - Loading embedding model: sentence-transformers/all-MiniLM-L6-v2...
+INFO 2025-07-01 21:02:02,402 rag_engine - Embedding model loaded.
+INFO 2025-07-01 21:02:02,683 rag_engine - Loaded 28178 vectors and 28178 metadata entries.
+INFO 2025-07-01 21:02:02,683 rag_engine - RAG core components (Embeddings, FAISS) initialized.
+INFO 2025-07-01 21:04:24,423 views - Received request data: {'question': 'ما هي الإجراءات الحكومية الأخيرة؟'}
+INFO 2025-07-01 21:04:24,426 views - model_type not in request payload. RAG engine will use system default.
+INFO 2025-07-01 21:04:24,426 views - Processing user question. Effective model_type to be passed to RAG: 'None'
+INFO 2025-07-01 21:04:24,426 views - Calling rag_engine_instance.ask_question with model_type: 'None'
+ERROR 2025-07-01 21:04:24,460 rag_engine - Error getting model type from settings: no such table: system_settings
+INFO 2025-07-01 21:04:24,462 rag_engine - Processing user question with model_type='local'...
+ERROR 2025-07-01 21:04:24,467 rag_engine - Error getting RAG settings: no such table: system_settings
+ERROR 2025-07-01 21:04:24,470 rag_engine - Error getting RAG settings: no such table: system_settings
+INFO 2025-07-01 21:04:24,560 rag_engine - Using provided model_type in generate_answer: local
+ERROR 2025-07-01 21:04:24,564 rag_engine - Error getting RAG settings: no such table: system_settings
+INFO 2025-07-01 21:04:24,564 rag_engine - Generating answer using model type: local
+WARNING 2025-07-01 21:04:24,567 rag_engine - GGUF model not found at C:\Users\Hp\Videos\RAG-WebSystem\src\models\SILMA-Kashif-2B-Instruct-v1.0.i1-IQ3_XS.gguf. Local model will be unavailable.
+INFO 2025-07-01 21:04:24,567 rag_engine - Local GGUF LLM initialized.
+ERROR 2025-07-01 21:04:24,570 rag_engine - Local LLM not available or failed to load.
+INFO 2025-07-01 21:04:24,575 views - RAG engine returned model_used: local_unavailable
+WARNING 2025-07-01 21:04:24,580 views - Failed to save chat message: no such table: rag_app_chatmessage
+ERROR 2025-07-01 21:35:00,652 views - خطأ في عرض صفحة الإحصائيات: no such table: rag_app_chatmessage
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_chatmessage
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 310, in get
+    total_questions = ChatMessage.objects.count()
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 608, in count
+    return self.query.get_count(using=self.db)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\query.py", line 568, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\query.py", line 554, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_chatmessage
+ERROR 2025-07-01 21:35:02,144 views - خطأ في API الكلمات المفتاحية: no such table: rag_app_chatmessage
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_chatmessage
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 700, in top_keywords_api
+    for question in recent_questions:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 398, in __iter__
+    self._fetch_all()
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 285, in __iter__
+    for row in compiler.results_iter(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1513, in results_iter
+    results = self.execute_sql(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_chatmessage
+ERROR 2025-07-01 21:35:02,149 views - خطأ في API أداء النظام: no such table: rag_app_searchquery
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_searchquery
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 770, in system_performance_api
+    response_time_stats = SearchQuery.objects.aggregate(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 592, in aggregate
+    return self.query.chain().get_aggregation(self.db, kwargs)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\query.py", line 554, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_searchquery
+ERROR 2025-07-01 21:35:02,181 views - خطأ في API إحصائيات المستندات: no such table: rag_app_documentsource
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_documentsource
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 841, in document_stats_api
+    doc_stats = DocumentSource.objects.filter(is_active=True).aggregate(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 592, in aggregate
+    return self.query.chain().get_aggregation(self.db, kwargs)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\query.py", line 554, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_documentsource
+ERROR 2025-07-01 21:35:02,202 views - خطأ في API نشاط المستخدمين: no such table: rag_app_chatmessage
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_chatmessage
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 951, in user_activity_api
+    for session in session_activity:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 398, in __iter__
+    self._fetch_all()
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 208, in __iter__
+    for row in compiler.results_iter(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1513, in results_iter
+    results = self.execute_sql(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_chatmessage
+ERROR 2025-07-01 21:35:02,291 views - خطأ في API بيانات الإحصائيات: no such table: rag_app_chatmessage
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_chatmessage
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 465, in analytics_data_api
+    for item in daily_questions:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 398, in __iter__
+    self._fetch_all()
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 208, in __iter__
+    for row in compiler.results_iter(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1513, in results_iter
+    results = self.execute_sql(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_chatmessage
+ERROR 2025-07-01 21:36:23,496 views - Error in get_settings: no such table: system_settings
+ERROR 2025-07-01 21:36:23,496 views - Error in system_status: no such table: rag_app_searchquery
+INFO 2025-07-01 22:47:27,181 views - Received request data: {'question': 'ما هو قانون المالية لسنة 2023؟'}
+INFO 2025-07-01 22:47:27,181 views - model_type not in request payload. RAG engine will use system default.
+INFO 2025-07-01 22:47:27,183 views - Processing user question. Effective model_type to be passed to RAG: 'None'
+INFO 2025-07-01 22:47:27,183 views - Calling rag_engine_instance.ask_question with model_type: 'None'
+ERROR 2025-07-01 22:47:27,188 rag_engine - Error getting model type from settings: no such table: system_settings
+INFO 2025-07-01 22:47:27,189 rag_engine - Processing user question with model_type='local'...
+ERROR 2025-07-01 22:47:27,191 rag_engine - Error getting RAG settings: no such table: system_settings
+ERROR 2025-07-01 22:47:27,195 rag_engine - Error getting RAG settings: no such table: system_settings
+INFO 2025-07-01 22:47:27,405 rag_engine - Using provided model_type in generate_answer: local
+ERROR 2025-07-01 22:47:27,411 rag_engine - Error getting RAG settings: no such table: system_settings
+INFO 2025-07-01 22:47:27,413 rag_engine - Generating answer using model type: local
+ERROR 2025-07-01 22:47:27,415 rag_engine - Local LLM not available or failed to load.
+INFO 2025-07-01 22:47:27,415 views - RAG engine returned model_used: local_unavailable
+WARNING 2025-07-01 22:47:27,419 views - Failed to save chat message: no such table: rag_app_chatmessage
+ERROR 2025-07-01 22:47:35,484 views - Error in get_settings: no such table: system_settings
+ERROR 2025-07-01 22:47:35,488 views - Error in system_status: no such table: rag_app_searchquery
+INFO 2025-07-01 22:47:53,827 views - Received settings data: {'model_type': 'local', 'model_params': {'local': {'temperature': 0.8, 'max_tokens': 1000, 'top_k': 55}, 'gemini': {'temperature': 0.7, 'max_tokens': 1000, 'top_k': 20}}}
+ERROR 2025-07-01 22:47:53,835 views - Error in save_settings: no such table: system_settings
+INFO 2025-07-01 22:47:57,187 views - Received settings data: {'model_type': 'local'}
+ERROR 2025-07-01 22:47:57,193 views - Error in save_settings: no such table: system_settings
+INFO 2025-07-01 22:48:03,481 views - Received settings data: {'model_type': 'gemini'}
+ERROR 2025-07-01 22:48:03,490 views - Error in save_settings: no such table: system_settings
+INFO 2025-07-01 22:48:10,712 views - Received settings data: {'model_type': 'gemini', 'model_params': {'local': {'temperature': 0.8, 'max_tokens': 1000, 'top_k': 55}, 'gemini': {'temperature': 0.8, 'max_tokens': 1000, 'top_k': 20}}}
+ERROR 2025-07-01 22:48:10,733 views - Error in save_settings: no such table: system_settings
+INFO 2025-07-01 22:48:23,146 views - Received request data: {'question': 'ما هو قانون المالية لسنة 2023؟'}
+INFO 2025-07-01 22:48:23,146 views - model_type not in request payload. RAG engine will use system default.
+INFO 2025-07-01 22:48:23,148 views - Processing user question. Effective model_type to be passed to RAG: 'None'
+INFO 2025-07-01 22:48:23,149 views - Calling rag_engine_instance.ask_question with model_type: 'None'
+ERROR 2025-07-01 22:48:23,152 rag_engine - Error getting model type from settings: no such table: system_settings
+INFO 2025-07-01 22:48:23,154 rag_engine - Processing user question with model_type='local'...
+ERROR 2025-07-01 22:48:23,158 rag_engine - Error getting RAG settings: no such table: system_settings
+ERROR 2025-07-01 22:48:23,160 rag_engine - Error getting RAG settings: no such table: system_settings
+INFO 2025-07-01 22:48:23,321 rag_engine - Using provided model_type in generate_answer: local
+ERROR 2025-07-01 22:48:23,328 rag_engine - Error getting RAG settings: no such table: system_settings
+INFO 2025-07-01 22:48:23,328 rag_engine - Generating answer using model type: local
+ERROR 2025-07-01 22:48:23,328 rag_engine - Local LLM not available or failed to load.
+INFO 2025-07-01 22:48:23,333 views - RAG engine returned model_used: local_unavailable
+WARNING 2025-07-01 22:48:23,340 views - Failed to save chat message: no such table: rag_app_chatmessage
+INFO 2025-07-01 22:48:36,063 views - Received request data: {'question': 'ما هو محتوى المرسوم المتعلق بالتقاعد؟'}
+INFO 2025-07-01 22:48:36,064 views - model_type not in request payload. RAG engine will use system default.
+INFO 2025-07-01 22:48:36,065 views - Processing user question. Effective model_type to be passed to RAG: 'None'
+INFO 2025-07-01 22:48:36,065 views - Calling rag_engine_instance.ask_question with model_type: 'None'
+ERROR 2025-07-01 22:48:36,070 rag_engine - Error getting model type from settings: no such table: system_settings
+INFO 2025-07-01 22:48:36,071 rag_engine - Processing user question with model_type='local'...
+ERROR 2025-07-01 22:48:36,075 rag_engine - Error getting RAG settings: no such table: system_settings
+ERROR 2025-07-01 22:48:36,077 rag_engine - Error getting RAG settings: no such table: system_settings
+INFO 2025-07-01 22:48:36,275 rag_engine - Using provided model_type in generate_answer: local
+ERROR 2025-07-01 22:48:36,281 rag_engine - Error getting RAG settings: no such table: system_settings
+INFO 2025-07-01 22:48:36,282 rag_engine - Generating answer using model type: local
+ERROR 2025-07-01 22:48:36,284 rag_engine - Local LLM not available or failed to load.
+INFO 2025-07-01 22:48:36,286 views - RAG engine returned model_used: local_unavailable
+WARNING 2025-07-01 22:48:36,289 views - Failed to save chat message: no such table: rag_app_chatmessage
+ERROR 2025-07-01 22:48:44,254 views - خطأ في عرض صفحة الإحصائيات: no such table: rag_app_chatmessage
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_chatmessage
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 310, in get
+    total_questions = ChatMessage.objects.count()
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 608, in count
+    return self.query.get_count(using=self.db)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\query.py", line 568, in get_count
+    return obj.get_aggregation(using, {"__count": Count("*")})["__count"]
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\query.py", line 554, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_chatmessage
+ERROR 2025-07-01 22:48:44,715 views - خطأ في API بيانات الإحصائيات: no such table: rag_app_chatmessage
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_chatmessage
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 465, in analytics_data_api
+    for item in daily_questions:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 398, in __iter__
+    self._fetch_all()
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 208, in __iter__
+    for row in compiler.results_iter(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1513, in results_iter
+    results = self.execute_sql(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_chatmessage
+ERROR 2025-07-01 22:48:44,774 views - خطأ في API أداء النظام: no such table: rag_app_searchquery
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_searchquery
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 770, in system_performance_api
+    response_time_stats = SearchQuery.objects.aggregate(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\manager.py", line 87, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 592, in aggregate
+    return self.query.chain().get_aggregation(self.db, kwargs)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\query.py", line 554, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_searchquery
+ERROR 2025-07-01 22:48:44,774 views - خطأ في API إحصائيات المستندات: no such table: rag_app_documentsource
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_documentsource
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 841, in document_stats_api
+    doc_stats = DocumentSource.objects.filter(is_active=True).aggregate(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 592, in aggregate
+    return self.query.chain().get_aggregation(self.db, kwargs)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\query.py", line 554, in get_aggregation
+    result = compiler.execute_sql(SINGLE)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_documentsource
+ERROR 2025-07-01 22:48:44,774 views - خطأ في API الكلمات المفتاحية: no such table: rag_app_chatmessage
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_chatmessage
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 700, in top_keywords_api
+    for question in recent_questions:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 398, in __iter__
+    self._fetch_all()
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 285, in __iter__
+    for row in compiler.results_iter(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1513, in results_iter
+    results = self.execute_sql(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_chatmessage
+ERROR 2025-07-01 22:48:44,779 views - خطأ في API نشاط المستخدمين: no such table: rag_app_chatmessage
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+sqlite3.OperationalError: no such table: rag_app_chatmessage
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\Hp\Videos\RAG-WebSystem\src\rag_app\views.py", line 951, in user_activity_api
+    for session in session_activity:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 398, in __iter__
+    self._fetch_all()
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 1881, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\query.py", line 208, in __iter__
+    for row in compiler.results_iter(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1513, in results_iter
+    results = self.execute_sql(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\models\sql\compiler.py", line 1562, in execute_sql
+    cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 102, in execute
+    return super().execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 67, in execute
+    return self._execute_with_wrappers(
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 80, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 84, in _execute
+    with self.db.wrap_database_errors:
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\utils.py", line 89, in _execute
+    return self.cursor.execute(sql, params)
+  File "C:\Users\Hp\Videos\RAG-WebSystem\venv\lib\site-packages\django\db\backends\sqlite3\base.py", line 328, in execute
+    return super().execute(query, params)
+django.db.utils.OperationalError: no such table: rag_app_chatmessage
+INFO 2025-07-02 16:02:25,212 rag_engine - Using device for embeddings: cpu
+INFO 2025-07-02 16:02:25,212 rag_engine - Loading embedding model: sentence-transformers/all-MiniLM-L6-v2...
+INFO 2025-07-02 16:02:28,791 rag_engine - Embedding model loaded.
+INFO 2025-07-02 16:02:29,030 rag_engine - Loaded 28178 vectors and 28178 metadata entries.
+INFO 2025-07-02 16:02:29,030 rag_engine - RAG core components (Embeddings, FAISS) initialized.
+INFO 2025-07-02 16:02:29,030 rag_engine - Using device for embeddings: cpu
+INFO 2025-07-02 16:02:29,030 rag_engine - Loading embedding model: sentence-transformers/all-MiniLM-L6-v2...
+INFO 2025-07-02 16:02:29,421 rag_engine - Embedding model loaded.
+INFO 2025-07-02 16:02:29,660 rag_engine - Loaded 28178 vectors and 28178 metadata entries.
+INFO 2025-07-02 16:02:29,662 rag_engine - RAG core components (Embeddings, FAISS) initialized.
+INFO 2025-07-02 16:02:43,671 rag_engine - Using device for embeddings: cpu
+INFO 2025-07-02 16:02:43,671 rag_engine - Loading embedding model: sentence-transformers/all-MiniLM-L6-v2...
+INFO 2025-07-02 16:02:45,313 rag_engine - Embedding model loaded.
+INFO 2025-07-02 16:02:45,609 rag_engine - Loaded 28178 vectors and 28178 metadata entries.
+INFO 2025-07-02 16:02:45,609 rag_engine - RAG core components (Embeddings, FAISS) initialized.
+INFO 2025-07-02 16:02:45,609 rag_engine - Using device for embeddings: cpu
+INFO 2025-07-02 16:02:45,623 rag_engine - Loading embedding model: sentence-transformers/all-MiniLM-L6-v2...
+INFO 2025-07-02 16:02:45,956 rag_engine - Embedding model loaded.
+INFO 2025-07-02 16:02:46,148 rag_engine - Loaded 28178 vectors and 28178 metadata entries.
+INFO 2025-07-02 16:02:46,148 rag_engine - RAG core components (Embeddings, FAISS) initialized.
+INFO 2025-07-02 16:03:03,177 rag_engine - Using device for embeddings: cpu
+INFO 2025-07-02 16:03:03,177 rag_engine - Loading embedding model: sentence-transformers/all-MiniLM-L6-v2...
+INFO 2025-07-02 16:03:05,962 rag_engine - Embedding model loaded.
+INFO 2025-07-02 16:03:06,176 rag_engine - Loaded 28178 vectors and 28178 metadata entries.
+INFO 2025-07-02 16:03:06,176 rag_engine - RAG core components (Embeddings, FAISS) initialized.
+INFO 2025-07-02 16:03:06,176 rag_engine - Using device for embeddings: cpu
+INFO 2025-07-02 16:03:06,176 rag_engine - Loading embedding model: sentence-transformers/all-MiniLM-L6-v2...
+INFO 2025-07-02 16:03:06,781 rag_engine - Embedding model loaded.
+INFO 2025-07-02 16:03:07,219 rag_engine - Loaded 28178 vectors and 28178 metadata entries.
+INFO 2025-07-02 16:03:07,220 rag_engine - RAG core components (Embeddings, FAISS) initialized.
+INFO 2025-07-02 16:03:34,690 views - Retrieved settings - model_type: local, model_params: {'local': {'temperature': 0.7, 'max_tokens': 1000, 'top_k': 40}, 'gemini': {'temperature': 0.7, 'max_tokens': 1000, 'top_k': 20}}, rag_settings: {'num_docs': 3, 'similarity_threshold': 0.5}
+INFO 2025-07-02 16:03:57,775 views - Retrieved settings - model_type: local, model_params: {'local': {'temperature': 0.7, 'max_tokens': 1000, 'top_k': 40}, 'gemini': {'temperature': 0.7, 'max_tokens': 1000, 'top_k': 20}}, rag_settings: {'num_docs': 3, 'similarity_threshold': 0.5}
+INFO 2025-07-02 16:04:07,243 views - Retrieved settings - model_type: local, model_params: {'local': {'temperature': 0.7, 'max_tokens': 1000, 'top_k': 40}, 'gemini': {'temperature': 0.7, 'max_tokens': 1000, 'top_k': 20}}, rag_settings: {'num_docs': 3, 'similarity_threshold': 0.5}

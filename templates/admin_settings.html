@@ -1,0 +1,793 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}الإدارة - إعدادات النظام{% endblock %}
+
+{% block extra_css %}
+<style>
+    .settings-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.95) 100%);
+        border: none;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        backdrop-filter: blur(10px);
+        transition: all 0.3s ease;
+        margin-bottom: 2rem;
+    }
+
+    .settings-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .settings-card-header {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: white;
+        border-radius: 20px 20px 0 0;
+        padding: 1.5rem;
+        border: none;
+    }
+
+    .settings-card-body {
+        padding: 2rem;
+    }
+
+    .form-section {
+        background: rgba(255,255,255,0.6);
+        border-radius: 15px;
+        padding: 1.5rem;
+        margin-bottom: 2rem;
+        border: 1px solid rgba(255,255,255,0.2);
+        transition: all 0.3s ease;
+    }
+
+    .form-section:hover {
+        background: rgba(255,255,255,0.8);
+        transform: translateY(-2px);
+    }
+
+    .form-section h5 {
+        color: var(--primary-color);
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-check {
+        background: rgba(255,255,255,0.8);
+        border-radius: 10px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+    }
+
+    .form-check:hover {
+        border-color: var(--secondary-color);
+        background: rgba(255,255,255,0.95);
+    }
+
+    .form-check-input:checked ~ .form-check-label {
+        color: var(--primary-color);
+        font-weight: 600;
+    }
+
+    .form-range {
+        background: linear-gradient(135deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+        border-radius: 10px;
+        height: 8px;
+    }
+
+    .form-range::-webkit-slider-thumb {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border: 3px solid white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        width: 20px;
+        height: 20px;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border: none;
+        border-radius: 25px;
+        padding: 0.75rem 2rem;
+        color: white;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+
+    .btn-gradient:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        color: white;
+    }
+
+    .status-card {
+        background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.9) 100%);
+        border: none;
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        height: 100%;
+    }
+
+    .status-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    }
+
+    .status-icon {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: white;
+        margin-bottom: 1rem;
+    }
+
+    .status-icon.model {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .status-icon.queries {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .range-display {
+        background: var(--primary-color);
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 15px;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .model-params-container {
+        background: rgba(255,255,255,0.4);
+        border-radius: 15px;
+        padding: 1.5rem;
+        border: 1px solid rgba(255,255,255,0.3);
+    }
+
+    .alert-custom {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.1) 0%, rgba(44, 85, 48, 0.1) 100%);
+        border: 1px solid rgba(40, 167, 69, 0.2);
+        border-radius: 15px;
+        color: var(--primary-color);
+    }
+
+    .divider {
+        height: 2px;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border-radius: 1px;
+        margin: 2rem 0;
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .toast-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1055;
+    }
+
+    .toast-custom {
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        border: none;
+        border-radius: 15px;
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .settings-card-body {
+            padding: 1.5rem;
+        }
+        .form-section {
+            padding: 1rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1><i class="fas fa-cog me-3"></i>لوحة الإدارة والإعدادات</h1>
+    <p>تخصيص إعدادات النظام وإدارة المعلمات</p>
+</div>
+
+<div class="container-fluid p-4">
+    <!-- Model Selection Card -->
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h4><i class="fas fa-robot me-2"></i>إعدادات النماذج</h4>
+        </div>
+        <div class="settings-card-body">
+            <div class="form-section">
+                <h5><i class="fas fa-microchip"></i>اختيار النموذج</h5>
+                <p class="text-muted mb-3">اختر النموذج الذي تريد استخدامه للإجابة على الاستفسارات</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="modelType" id="localModel" value="local" checked>
+                            <label class="form-check-label" for="localModel">
+                                <i class="fas fa-server me-2"></i>النموذج المحلي (Local Model)
+                            </label>
+                            <small class="form-text text-muted d-block mt-1">يستخدم نموذج GGUF المحلي للإجابة على الاستفسارات</small>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="modelType" id="geminiModel" value="gemini">
+                            <label class="form-check-label" for="geminiModel">
+                                <i class="fab fa-google me-2"></i>نموذج جيميني (Gemini API)
+                            </label>
+                            <small class="form-text text-muted d-block mt-1">يستخدم واجهة برمجة تطبيقات Google Gemini للإجابة على الاستفسارات</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="saveModelSelection" class="btn btn-gradient mt-3">
+                    <i class="fas fa-save me-2"></i>حفظ اختيار النموذج
+                </button>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Model Parameters Section -->
+            <div class="form-section">
+                <h5><i class="fas fa-sliders-h"></i>معلمات النموذج</h5>
+                <p class="text-muted mb-3">تخصيص معلمات النموذج للحصول على أفضل النتائج</p>
+                
+                <!-- Local Model Parameters -->
+                <div id="localModelParams" class="model-params-container">
+                    <h6 class="mb-3"><i class="fas fa-server me-2"></i>إعدادات النموذج المحلي</h6>
+                    
+                    <div class="mb-4">
+                        <label for="temperature" class="form-label">درجة الحرارة (Temperature)</label>
+                        <input type="range" class="form-range" id="temperature" min="0" max="1" step="0.1" value="0.7">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">0 (أكثر دقة)</small>
+                            <span class="range-display" id="tempValue">0.7</span>
+                            <small class="text-muted">1 (أكثر إبداعًا)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="maxTokens" class="form-label">الحد الأقصى للرموز (Max Tokens)</label>
+                        <input type="range" class="form-range" id="maxTokens" min="100" max="2000" step="100" value="1000">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">100</small>
+                            <span class="range-display" id="tokensValue">1000</span>
+                            <small class="text-muted">2000</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="topK" class="form-label">Top K</label>
+                        <input type="range" class="form-range" id="topK" min="1" max="100" step="1" value="40">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">1</small>
+                            <span class="range-display" id="topKValue">40</span>
+                            <small class="text-muted">100</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gemini Model Parameters -->
+                <div id="geminiModelParams" class="model-params-container" style="display: none;">
+                    <h6 class="mb-3"><i class="fab fa-google me-2"></i>إعدادات نموذج جيميني</h6>
+                    
+                    <div class="mb-4">
+                        <label for="geminiTemperature" class="form-label">درجة الحرارة (Temperature)</label>
+                        <input type="range" class="form-range" id="geminiTemperature" min="0" max="1" step="0.1" value="0.7">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">0 (أكثر دقة)</small>
+                            <span class="range-display" id="geminiTempValue">0.7</span>
+                            <small class="text-muted">1 (أكثر إبداعًا)</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="geminiMaxTokens" class="form-label">الحد الأقصى للرموز (Max Output Tokens)</label>
+                        <input type="range" class="form-range" id="geminiMaxTokens" min="100" max="2000" step="100" value="1000">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">100</small>
+                            <span class="range-display" id="geminiTokensValue">1000</span>
+                            <small class="text-muted">2000</small>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="geminiTopK" class="form-label">Top K</label>
+                        <input type="range" class="form-range" id="geminiTopK" min="1" max="40" step="1" value="20">
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">1</small>
+                            <span class="range-display" id="geminiTopKValue">20</span>
+                            <small class="text-muted">40</small>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="saveModelParams" class="btn btn-gradient mt-3">
+                    <i class="fas fa-save me-2"></i>حفظ معلمات النموذج
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- RAG Settings Card -->
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h4><i class="fas fa-search me-2"></i>إعدادات استرجاع المعلومات (RAG)</h4>
+        </div>
+        <div class="settings-card-body">
+            <div class="form-section">
+                <h5><i class="fas fa-database"></i>تخصيص استرجاع المستندات</h5>
+                <p class="text-muted mb-3">تخصيص كيفية استرجاع المستندات وتوليد الإجابات</p>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label for="numDocs" class="form-label">عدد المستندات المسترجعة</label>
+                            <input type="range" class="form-range" id="numDocs" min="1" max="10" step="1" value="3">
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <small class="text-muted">1</small>
+                                <span class="range-display" id="numDocsValue">3</span>
+                                <small class="text-muted">10</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-4">
+                            <label for="similarityThreshold" class="form-label">عتبة التشابه (Similarity Threshold)</label>
+                            <input type="range" class="form-range" id="similarityThreshold" min="0.1" max="0.9" step="0.1" value="0.5">
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <small class="text-muted">0.1 (أقل تشابهًا)</small>
+                                <span class="range-display" id="thresholdValue">0.5</span>
+                                <small class="text-muted">0.9 (أكثر تشابهًا)</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button id="saveRagSettings" class="btn btn-gradient">
+                    <i class="fas fa-save me-2"></i>حفظ إعدادات RAG
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Status Card -->
+    <div class="settings-card">
+        <div class="settings-card-header">
+            <h4><i class="fas fa-chart-line me-2"></i>حالة النظام</h4>
+        </div>
+        <div class="settings-card-body">
+            <div class="alert alert-custom mb-4">
+                <i class="fas fa-info-circle me-2"></i>
+                معلومات حول حالة النظام الحالية والإحصائيات
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <div class="status-card card">
+                        <div class="card-body text-center">
+                            <div class="status-icon model mx-auto">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <h6 class="card-subtitle mb-2 text-muted">النموذج الحالي</h6>
+                            <p class="card-text fw-bold" id="currentModelDisplay">النموذج المحلي (Local Model)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="status-card card">
+                        <div class="card-body text-center">
+                            <div class="status-icon queries mx-auto">
+                                <i class="fas fa-question-circle"></i>
+                            </div>
+                            <h6 class="card-subtitle mb-2 text-muted">عدد الاستفسارات</h6>
+                            <p class="card-text fw-bold" id="queryCount">جاري التحميل...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button id="refreshStatus" class="btn btn-outline-primary">
+                    <i class="fas fa-sync-alt me-2"></i>تحديث الحالة
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container">
+    <div id="settingsToast" class="toast toast-custom" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-transparent border-0 text-white">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong class="me-auto">إشعار</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body text-white" id="toastMessage">
+            تم حفظ الإعدادات بنجاح
+        </div>
+    </div>
+</div>
+
+<!-- CSRF Token -->
+{% csrf_token %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize variables
+    let currentModelType = 'local';
+    
+    // Initialize UI based on saved preferences
+    initializeUI();
+    
+    // Add event listeners
+    setupEventListeners();
+    
+    // Load system status
+    loadSystemStatus();
+    
+    // Function to get CSRF token
+    function getCsrfToken() {
+        return document.querySelector('[name=csrfmiddlewaretoken]').value;
+    }
+    
+    // Function to initialize UI based on saved preferences
+    function initializeUI() {
+        // Fetch settings from backend
+        fetch('/api/get-settings/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    // Set model type
+                    currentModelType = data.model_type || 'local';
+                    document.getElementById(currentModelType + 'Model').checked = true;
+                    
+                    // Set model parameters
+                    const modelParams = data.model_params || {};
+                    
+                    // Local model parameters
+                    if (modelParams.local) {
+                        if (modelParams.local.temperature !== undefined) {
+                            document.getElementById('temperature').value = modelParams.local.temperature;
+                        }
+                        if (modelParams.local.max_tokens !== undefined) {
+                            document.getElementById('maxTokens').value = modelParams.local.max_tokens;
+                        }
+                        if (modelParams.local.top_k !== undefined) {
+                            document.getElementById('topK').value = modelParams.local.top_k;
+                        }
+                    }
+                    
+                    // Gemini model parameters
+                    if (modelParams.gemini) {
+                        if (modelParams.gemini.temperature !== undefined) {
+                            document.getElementById('geminiTemperature').value = modelParams.gemini.temperature;
+                        }
+                        if (modelParams.gemini.max_tokens !== undefined) {
+                            document.getElementById('geminiMaxTokens').value = modelParams.gemini.max_tokens;
+                        }
+                        if (modelParams.gemini.top_k !== undefined) {
+                            document.getElementById('geminiTopK').value = modelParams.gemini.top_k;
+                        }
+                    }
+                    
+                    // RAG settings
+                    const ragSettings = data.rag_settings || {};
+                    if (ragSettings.num_docs !== undefined) {
+                        document.getElementById('numDocs').value = ragSettings.num_docs;
+                    }
+                    if (ragSettings.similarity_threshold !== undefined) {
+                        document.getElementById('similarityThreshold').value = ragSettings.similarity_threshold;
+                    }
+                    
+                    // Show appropriate model parameters section
+                    toggleModelParamsSection(currentModelType);
+                    
+                    // Update display values
+                    updateDisplayValues();
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching settings:', error);
+                showToast('خطأ في تحميل الإعدادات', 'error');
+                
+                // Show default values
+                toggleModelParamsSection('local');
+                updateDisplayValues();
+            });
+    }
+    
+    // Function to set up event listeners
+    function setupEventListeners() {
+        // Model selection radio buttons
+        const modelRadios = document.querySelectorAll('input[name="modelType"]');
+        modelRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                currentModelType = this.value;
+                toggleModelParamsSection(currentModelType);
+                updateCurrentModelDisplay();
+            });
+        });
+        
+        // Save model selection button
+        document.getElementById('saveModelSelection').addEventListener('click', function() {
+            saveModelSelection();
+        });
+        
+        // Range input event listeners for displaying values
+        setupRangeInputListeners();
+        
+        // Save model parameters button
+        document.getElementById('saveModelParams').addEventListener('click', function() {
+            saveModelParameters();
+        });
+        
+        // Save RAG settings button
+        document.getElementById('saveRagSettings').addEventListener('click', function() {
+            saveRagSettings();
+        });
+        
+        // Refresh status button
+        document.getElementById('refreshStatus').addEventListener('click', function() {
+            loadSystemStatus();
+        });
+    }
+    
+    // Function to toggle model parameters section visibility
+    function toggleModelParamsSection(modelType) {
+        if (modelType === 'local') {
+            document.getElementById('localModelParams').style.display = 'block';
+            document.getElementById('geminiModelParams').style.display = 'none';
+        } else {
+            document.getElementById('localModelParams').style.display = 'none';
+            document.getElementById('geminiModelParams').style.display = 'block';
+        }
+    }
+    
+    // Function to set up range input listeners
+    function setupRangeInputListeners() {
+        // Local model parameters
+        document.getElementById('temperature').addEventListener('input', function() {
+            document.getElementById('tempValue').textContent = this.value;
+        });
+        
+        document.getElementById('maxTokens').addEventListener('input', function() {
+            document.getElementById('tokensValue').textContent = this.value;
+        });
+        
+        document.getElementById('topK').addEventListener('input', function() {
+            document.getElementById('topKValue').textContent = this.value;
+        });
+        
+        // Gemini model parameters
+        document.getElementById('geminiTemperature').addEventListener('input', function() {
+            document.getElementById('geminiTempValue').textContent = this.value;
+        });
+        
+        document.getElementById('geminiMaxTokens').addEventListener('input', function() {
+            document.getElementById('geminiTokensValue').textContent = this.value;
+        });
+        
+        document.getElementById('geminiTopK').addEventListener('input', function() {
+            document.getElementById('geminiTopKValue').textContent = this.value;
+        });
+        
+        // RAG settings
+        document.getElementById('numDocs').addEventListener('input', function() {
+            document.getElementById('numDocsValue').textContent = this.value;
+        });
+        
+        document.getElementById('similarityThreshold').addEventListener('input', function() {
+            document.getElementById('thresholdValue').textContent = this.value;
+        });
+    }
+    
+    // Function to save model selection
+    function saveModelSelection() {
+        const settings = {
+            model_type: currentModelType
+        };
+        
+        saveSettingsToBackend(settings, 'تم حفظ اختيار النموذج بنجاح');
+    }
+    
+    // Function to save model parameters
+    function saveModelParameters() {
+        const settings = {
+            model_type: currentModelType,
+            model_params: {
+                local: {
+                    temperature: parseFloat(document.getElementById('temperature').value),
+                    max_tokens: parseInt(document.getElementById('maxTokens').value),
+                    top_k: parseInt(document.getElementById('topK').value)
+                },
+                gemini: {
+                    temperature: parseFloat(document.getElementById('geminiTemperature').value),
+                    max_tokens: parseInt(document.getElementById('geminiMaxTokens').value),
+                    top_k: parseInt(document.getElementById('geminiTopK').value)
+                }
+            }
+        };
+        
+        saveSettingsToBackend(settings, 'تم حفظ معلمات النموذج بنجاح');
+    }
+    
+    // Function to save RAG settings
+    function saveRagSettings() {
+        const settings = {
+            model_type: currentModelType,
+            rag_settings: {
+                num_docs: parseInt(document.getElementById('numDocs').value),
+                similarity_threshold: parseFloat(document.getElementById('similarityThreshold').value)
+            }
+        };
+        
+        saveSettingsToBackend(settings, 'تم حفظ إعدادات RAG بنجاح');
+    }
+    
+    // Function to update display values
+    function updateDisplayValues() {
+        // Local model parameters
+        document.getElementById('tempValue').textContent = document.getElementById('temperature').value;
+        document.getElementById('tokensValue').textContent = document.getElementById('maxTokens').value;
+        document.getElementById('topKValue').textContent = document.getElementById('topK').value;
+        
+        // Gemini model parameters
+        document.getElementById('geminiTempValue').textContent = document.getElementById('geminiTemperature').value;
+        document.getElementById('geminiTokensValue').textContent = document.getElementById('geminiMaxTokens').value;
+        document.getElementById('geminiTopKValue').textContent = document.getElementById('geminiTopK').value;
+        
+        // RAG settings
+        document.getElementById('numDocsValue').textContent = document.getElementById('numDocs').value;
+        document.getElementById('thresholdValue').textContent = document.getElementById('similarityThreshold').value;
+        
+        // Update current model display
+        updateCurrentModelDisplay();
+    }
+    
+    // Function to update current model display
+    function updateCurrentModelDisplay() {
+        const modelDisplayText = currentModelType === 'local' 
+            ? 'النموذج المحلي (Local Model)' 
+            : 'نموذج جيميني (Gemini API)';
+        document.getElementById('currentModelDisplay').textContent = modelDisplayText;
+    }
+    
+    // Function to load system status
+    function loadSystemStatus() {
+        // Update current model display
+        updateCurrentModelDisplay();
+        
+        // Fetch query count from backend
+        fetch('/api/system-status/')
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    document.getElementById('queryCount').textContent = data.query_count || '0';
+                } else {
+                    document.getElementById('queryCount').textContent = 'خطأ في التحميل';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching system status:', error);
+                document.getElementById('queryCount').textContent = 'خطأ في التحميل';
+            });
+    }
+    
+    // Function to save settings to backend - FIXED VERSION
+    function saveSettingsToBackend(settings, successMessage) {
+        // Show loading state
+        const allButtons = document.querySelectorAll('.btn-gradient');
+        allButtons.forEach(btn => {
+            btn.disabled = true;
+            btn.innerHTML = '<span class="loading-spinner me-2"></span>جاري الحفظ...';
+        });
+        
+        fetch('/api/save-settings/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify(settings)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                showToast(successMessage || 'تم حفظ الإعدادات بنجاح', 'success');
+                // Refresh system status to show updated info
+                loadSystemStatus();
+            } else {
+                throw new Error(data.message || 'حدث خطأ غير معروف');
+            }
+        })
+        .catch(error => {
+            console.error('Error saving settings:', error);
+            showToast('حدث خطأ أثناء حفظ الإعدادات: ' + error.message, 'error');
+        })
+        .finally(() => {
+            // Restore button states
+            allButtons.forEach(btn => {
+                btn.disabled = false;
+                if (btn.id === 'saveModelSelection') {
+                    btn.innerHTML = '<i class="fas fa-save me-2"></i>حفظ اختيار النموذج';
+                } else if (btn.id === 'saveModelParams') {
+                    btn.innerHTML = '<i class="fas fa-save me-2"></i>حفظ معلمات النموذج';
+                } else if (btn.id === 'saveRagSettings') {
+                    btn.innerHTML = '<i class="fas fa-save me-2"></i>حفظ إعدادات RAG';
+                }
+            });
+        });
+    }
+    
+    // Function to show toast notification
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('settingsToast');
+        const toastMessage = document.getElementById('toastMessage');
+        
+        if (!toast || !toastMessage) {
+            console.error('Toast elements not found');
+            alert(message); // Fallback to alert
+            return;
+        }
+        
+        // Set message
+        toastMessage.textContent = message;
+        
+        // Set toast style based on type
+        toast.className = 'toast toast-custom';
+        if (type === 'error') {
+            toast.style.background = 'linear-gradient(135deg, #dc3545 0%, #c82333 100%)';
+        } else {
+            toast.style.background = 'linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%)';
+        }
+        
+        // Show toast
+        if (typeof bootstrap !== 'undefined' && bootstrap.Toast) {
+            const bsToast = new bootstrap.Toast(toast);
+            bsToast.show();
+        } else {
+            // Fallback if Bootstrap is not available
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+    }
+});
+</script>
+{% endblock %}
