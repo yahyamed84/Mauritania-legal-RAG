@@ -4,7 +4,7 @@
 
 ---
 
-## 📖 Overview
+## Overview
 
 **RAG-WebSystem** is a scalable web framework that seamlessly integrates:
 
@@ -18,7 +18,7 @@ Users submit queries through a clean web interface. The RAG core retrieves relev
 
 ---
 
-## 🏛️ Architecture
+##  Architecture
 
 ```text
 ┌───────────────────────────────────────────────────────────────────────────────┐
